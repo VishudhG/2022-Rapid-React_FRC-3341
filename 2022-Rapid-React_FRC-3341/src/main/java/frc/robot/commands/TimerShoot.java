@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
 
-public class Shoot extends CommandBase {
+public class TimerShoot extends CommandBase {
 
   private double power;
   //placeholder
@@ -29,7 +29,7 @@ public class Shoot extends CommandBase {
   BallHandler ballhandler;
 
   /** Creates a new Shoot. */
-  public Shoot(BallHandler ballHandler, double power) {
+  public TimerShoot(BallHandler ballHandler, double power) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(ballHandler);
     this.ballhandler = ballHandler;
@@ -68,12 +68,15 @@ public class Shoot extends CommandBase {
  
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    ballhandler.setRollerPower(0);
+    ballhandler.setFlywheelPower(0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(cargoTimer.get() >= flyWheelUpToSpeedTime) {
+    if(cargoTimer.get() >= cargoIsLaunchedTime) {
       return true;
     }
     else return false;
