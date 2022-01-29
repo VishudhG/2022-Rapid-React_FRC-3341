@@ -23,6 +23,10 @@ public final class Constants {
     public static final class MotorPorts {
             public static final int port1 = 1;
             public static final int port2 = 2;
+            public static final int port3 = 3;
+            public static final int port4 = 4;
+            public static final int port5 = 5;
+            public static final int port6 = 6;
          } 
     
     public static final class JoystickAxis {
@@ -33,14 +37,7 @@ public final class Constants {
         public static final int Zero = 0;
         public static final int One = 1;
     }
-    public static final class ScrewConsts{
-        public static final int screwPort = 4;
-        public final static double startPos = 0;
-        public final static double boxPos = 0;
-        public final static double bottomPos = 7;
-        public final static double middlePos = 15;
-        public final static double topPos = 23;
-    }
+    
     public static final class pidConsts{
         public static final double pidP = 1;
         public static final double pidI = 0;

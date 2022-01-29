@@ -24,6 +24,8 @@ import frc.robot.Constants;
 
 public class BallHandler extends SubsystemBase {
 
+  private static BallHandler ballHandler;
+
   //fill in later
   private double wheelCircumference;
 
@@ -42,7 +44,6 @@ public class BallHandler extends SubsystemBase {
   private final WPI_TalonSRX leftflywheel = new WPI_TalonSRX(Constants.MotorPorts.port1);
   private final WPI_TalonSRX rightflywheel = new WPI_TalonSRX(Constants.MotorPorts.port2);
   private final WPI_TalonSRX pivot = new WPI_TalonSRX(Constants.MotorPorts.port3);
-  private final WPI_VictorSPX pivotfollower = new WPI_VictorSPX(Constants.MotorPorts.port4);
   private final WPI_VictorSPX roller = new WPI_VictorSPX(Constants.MotorPorts.port5);
 
   private final PIDController pid = new PIDController(kp, ki, kd);
@@ -54,18 +55,23 @@ public class BallHandler extends SubsystemBase {
     pivot.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
     roller.configFactoryDefault();
     roller.setInverted(false);
-    pivotfollower.configFactoryDefault();
-    pivotfollower.follow(pivot);
-    pivotfollower.setInverted(InvertType.FollowMaster);
     leftflywheel.configFactoryDefault();
     leftflywheel.setInverted(false);
     leftflywheel.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
     rightflywheel.configFactoryDefault();
     rightflywheel.setInverted(true);
     rightflywheel.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
-  
 
   }
+
+  public BallHandler getInstance() {
+    if(ballHandler == null) {
+      ballHandler = new BallHandler();
+    }
+    return ballHandler;
+  }
+
+  
 
   public void resetEncoders(){
     leftflywheel.setSelectedSensorPosition(0,0,10);
