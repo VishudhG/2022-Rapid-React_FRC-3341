@@ -39,6 +39,9 @@ public class BallHandler extends SubsystemBase {
   private double ks;
 
   private double threshold;
+  private double tolerance = 0;
+  private double toleranceprime = 0;
+  
 
   //change ports when ready to start testing
   private final WPI_TalonSRX leftflywheel = new WPI_TalonSRX(Constants.MotorPorts.port1);
@@ -61,6 +64,7 @@ public class BallHandler extends SubsystemBase {
     rightflywheel.configFactoryDefault();
     rightflywheel.setInverted(true);
     rightflywheel.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
+    pid.setTolerance(tolerance, toleranceprime);
 
   }
 
@@ -102,6 +106,17 @@ public class BallHandler extends SubsystemBase {
   public void setFlywheelPower(double speed) {
     leftflywheel.set(speed);
     rightflywheel.set(speed);
+  }
+
+  public void setFlywheelConstantVelocity(double velocity) {
+    //need to look at possible unit conversions (probably sticking to 100ms intervals)
+    double power = pid.calculate(leftflywheel.getSelectedSensorVelocity(), velocity);
+    leftflywheel.set(power);
+    rightflywheel.set(power);
+  }
+
+  public boolean withinErrorMargin() {
+    return (pid.atSetpoint());
   }
   
   public void setPivotPower(double speed) {
