@@ -39,9 +39,16 @@ public class BallHandler extends SubsystemBase {
   private double kv;
   private double ks;
 
+  private double kp2;
+  private double ki2;
+  private double kd2;
+
   private double threshold;
-  private double tolerance;
-  private double toleranceprime;
+  private double flywheelTolerance;
+  private double flywheelToleranceprime;
+
+  private double pivotTolerance;
+  private double pivotTolerancePrime;
 
   //change ports when ready to start testing
   private final WPI_TalonSRX leftflywheel = new WPI_TalonSRX(Constants.MotorPorts.port1);
@@ -49,7 +56,8 @@ public class BallHandler extends SubsystemBase {
   private final WPI_TalonSRX pivot = new WPI_TalonSRX(Constants.MotorPorts.port3);
   private final WPI_VictorSPX roller = new WPI_VictorSPX(Constants.MotorPorts.port5);
 
-  private final PIDController pid = new PIDController(kp, ki, kd);
+  private final PIDController pidflywheel = new PIDController(kp, ki, kd);
+  private final PIDController pidpivot = new PIDController(kp2, ki2, kd2);
   private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(ks, kv);
   
   public BallHandler() {
@@ -65,7 +73,8 @@ public class BallHandler extends SubsystemBase {
     rightflywheel.configFactoryDefault();
     rightflywheel.setInverted(true);
     rightflywheel.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
-    pid.setTolerance(tolerance, toleranceprime);
+    pidflywheel.setTolerance(flywheelTolerance, flywheelToleranceprime);
+    pidpivot.setTolerance(pivotTolerance, pivotTolerancePrime);
 
   }
 
@@ -115,21 +124,25 @@ public class BallHandler extends SubsystemBase {
 
   public void setFlywheelConstantVelocity(double velocity) {
     //Need to look at possible unit conversions (probably sticking to 100ms intervals). Is *ticksToMeters the right way?
-    double power = pid.calculate(leftflywheel.getSelectedSensorVelocity() * ticksToMeters, velocity);
+    double power = pidflywheel.calculate(leftflywheel.getSelectedSensorVelocity() * ticksToMeters, velocity);
     leftflywheel.set(power);
     rightflywheel.set(power);
   }
 
   public void setPivotPositionPID(double angle) {
     //"raw sensor units" - angle will be in degrees probably, how to convert?
-    double targetAngle = pid.calculate(getPivotPosition(), angle);
+    double targetAngle = pidpivot.calculate(getPivotPosition(), angle);
     pivot.set(targetAngle); 
   }
 
-  public boolean withinErrorMargin() {
-    return (pid.atSetpoint());
+  public boolean flywheelWithinErrorMargin() {
+    return (pidflywheel.atSetpoint());
   }
   
+  public boolean pivotWithinErrorMargin() {
+    return (pidpivot.atSetpoint());
+  }
+
   public void setPivotPower(double speed) {
     pivot.set(speed);
   }
