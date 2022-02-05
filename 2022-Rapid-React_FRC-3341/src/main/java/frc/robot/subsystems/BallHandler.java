@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -14,8 +15,11 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.hal.DigitalGlitchFilterJNI;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 
@@ -65,6 +69,8 @@ public class BallHandler extends SubsystemBase {
     pivot.setInverted(false);
     pivot.setNeutralMode(NeutralMode.Brake);
     pivot.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
+    pivot.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
+    pivot.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
     roller.configFactoryDefault();
     roller.setInverted(false);
     leftflywheel.configFactoryDefault();
@@ -103,6 +109,24 @@ public class BallHandler extends SubsystemBase {
 
   public double getPivotPosition(){
     return (((pivot.getSelectedSensorPosition(0) * (ticksToDegrees))));
+  }
+
+  public boolean isForwardLimitClosed() {
+    if(pivot.isFwdLimitSwitchClosed() == 1) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  public boolean isReverseLimitClosed() {
+    if(pivot.isRevLimitSwitchClosed() == 1) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 
   public double getVelocity(){
@@ -155,6 +179,14 @@ public double getFlywheelCurrent() {
     roller.set(speed);
   }
 
+  public double getRollerPower() {
+    return roller.get();
+  }
+
+  public double getFlywheelPower() {
+    return leftflywheel.get();
+  }
+
 
 
   
@@ -162,7 +194,17 @@ public double getFlywheelCurrent() {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Flywheel Ticks: ", getTicks(leftflywheel));
+    SmartDashboard.putNumber("Flywheel Velocity", getFlywheelPower());
+    SmartDashboard.putNumber("Flywheel Power", getVelocity());
+    SmartDashboard.putNumber("Roller Ticks: ", getRollerTicks());
+    SmartDashboard.putNumber("Roller Power: ", getRollerPower());
+
+    SmartDashboard.putNumber("Pivot Angle: ", getPivotPosition());
+
+    //A return of 'false' means that the limit switch is active
+    SmartDashboard.putBoolean("Forward Limit Switch: ", isForwardLimitClosed());
+    SmartDashboard.putBoolean("Reverse Limit Switch: ", isReverseLimitClosed());
 
   }
 }

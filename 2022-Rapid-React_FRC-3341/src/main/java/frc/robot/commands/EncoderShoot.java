@@ -10,19 +10,18 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
-
+import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.BallHandler;
 
 
 public class EncoderShoot extends CommandBase {
 
-  BallHandler ballhandler;
-  private Joystick joystick;
+  private BallHandler ballhandler;
 
   double power;
   double desiredvelocity;
   boolean isFlywheelAtSpeed;
-  private boolean teleOp;
   //placeholder
   double cargoIsLaunchedTime = 0;
 
@@ -32,13 +31,11 @@ public class EncoderShoot extends CommandBase {
   private double rollerpower = 0;
 
   /** Creates a new EncoderShoot. */
-  public EncoderShoot(BallHandler ballHandler, double power, Joystick joystick, boolean teleOp) {
+  public EncoderShoot(double power) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(ballHandler);
-    this.ballhandler = ballHandler;
+    addRequirements(RobotContainer.returnBallHandler());
+    this.ballhandler = RobotContainer.returnBallHandler();
     this.power = power;
-    this.joystick = joystick;
-    this.teleOp = teleOp;
    
   }
 
@@ -54,11 +51,8 @@ public class EncoderShoot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+      //Is this the right way to do it?
 
-    if(teleOp){
-      ballhandler.setFlywheelPower(joystick.getRawAxis(1));
-    }
-    else {
     ballhandler.setFlywheelConstantVelocity(power);
 
     if(ballhandler.flywheelWithinErrorMargin() && !isFlywheelAtSpeed) {
@@ -66,8 +60,6 @@ public class EncoderShoot extends CommandBase {
       cargoTimer.start();
       isFlywheelAtSpeed = true;
     }
-  }
-
   }
 
   // Called once the command ends or is interrupted.

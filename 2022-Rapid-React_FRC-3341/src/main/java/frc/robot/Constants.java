@@ -15,6 +15,11 @@ package frc.robot;
 public final class Constants {
     public final static double threadLength = 0.125;
     public final static double gearBoxRatio = 4;
+
+    public static final class JoystickPorts {
+        public static final int JoystickPort1 = 1;
+    }
+
     public static final class DriveTrainPorts {
         public static final int LeftDriveTalonPort = 1;
         public static final int RightDriveTalonPort = 2;
@@ -33,6 +38,7 @@ public final class Constants {
         public static final int  XAxis = 0;
         public static final int YAxis = 1;
     } 
+
     public static final class USBOrder {
         public static final int Zero = 0;
         public static final int One = 1;
