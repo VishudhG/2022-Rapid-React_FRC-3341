@@ -117,6 +117,10 @@ public class BallHandler extends SubsystemBase {
   return roller.getSelectedSensorPosition();
 }
 
+public double getFlywheelCurrent() {
+  return leftflywheel.getStatorCurrent();
+}
+
   public void setFlywheelPower(double speed) {
     leftflywheel.set(speed);
     rightflywheel.set(speed);
@@ -150,6 +154,11 @@ public class BallHandler extends SubsystemBase {
   public void setRollerPower(double speed) {
     roller.set(speed);
   }
+
+
+
+  
+
 
   @Override
   public void periodic() {
