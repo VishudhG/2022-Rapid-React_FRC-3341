@@ -20,9 +20,18 @@ import frc.robot.subsystems.*;
 public class RobotContainer {
 
   private static Joystick joystick;
-  private static JoystickButton button1;
+  private static JoystickButton shootbutton;
+  private static JoystickButton flywheelbutton;
+  private static JoystickButton rollerbutton;
+  private static JoystickButton setanglebutton;
+  private static JoystickButton resetanglebutton;
 
-  private int power = 0;
+  private int flywheelpower = 0;
+  private double flywheelvelocity = 0;
+
+  private double angle = 0;
+
+  private int rollerpower = 0;
 
   private static final BallHandler m_ballHandler = new BallHandler();
   // The robot's subsystems and commands are defined here...
@@ -43,8 +52,17 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    button1 = new JoystickButton(joystick, 1);
-    button1.toggleWhenPressed(new EncoderShoot(power));
+    shootbutton = new JoystickButton(joystick, 1);
+    shootbutton.toggleWhenPressed(new EncoderShoot(flywheelpower));
+    flywheelbutton = new JoystickButton(joystick, 2);
+    flywheelbutton.toggleWhenPressed(new ManualFlywheel(flywheelvelocity));
+    rollerbutton = new JoystickButton(joystick, 3);
+    rollerbutton.toggleWhenPressed(new ManualRoller(rollerpower));
+    setanglebutton = new JoystickButton(joystick, 4);
+    setanglebutton.toggleWhenPressed(new SetAngle(angle));
+    resetanglebutton = new JoystickButton(joystick, 5);
+    resetanglebutton.toggleWhenPressed(new SetAngle(0));
+
 
   }
 

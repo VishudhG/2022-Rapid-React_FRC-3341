@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.BallHandler;
 
 public class SetAngle extends CommandBase {
@@ -12,10 +13,10 @@ public class SetAngle extends CommandBase {
   private double angle;
   private BallHandler ballhandler;
 
-  public SetAngle(double angle, BallHandler ballHandler) {
+  public SetAngle(double angle) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(ballHandler);
-    this.ballhandler = ballHandler;
+    addRequirements(RobotContainer.returnBallHandler());
+    this.ballhandler = RobotContainer.returnBallHandler();
     this.angle = angle;
 
   }
